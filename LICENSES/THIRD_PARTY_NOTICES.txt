@@ -1,0 +1,75 @@
+MKV Muxer 2.0 — THIRD-PARTY NOTICES / СТОРОННИЕ КОМПОНЕНТЫ
+================================================================
+
+Эта программа распространяется под GNU General Public License версии 2
+или (по вашему выбору) любой более поздней версии.
+Полный текст: LICENSES/GPL-2.0.txt.
+Исходный код самой программы: mkv_muxer.py (входит в поставку и в EXE).
+
+----------------------------------------------------------------
+1. MKVToolNix / mkvmerge
+----------------------------------------------------------------
+Компонент:      mkvmerge.exe, версия 103.0 (Windows, 64-bit)
+Автор:          Moritz Bunkus и участники проекта MKVToolNix
+Лицензия:       GNU GPL v2 или новее (GPL-2.0-or-later)
+Сайт:           https://www.bunkus.org/index.php/mkvtoolnix/
+Исходный код:   https://codeberg.org/mbunkus/mkvtoolnix
+Релиз 103.0:    https://codeberg.org/mbunkus/mkvtoolnix/releases/tag/release-103.0
+
+Двоичный файл mkvmerge.exe включён без изменений. Он распространяется
+как отдельная программа (вызывается через subprocess), поэтому его
+лицензия не изменяет лицензию MKV Muxer.
+
+Полный текст лицензии MKVToolNix: LICENSES/MKVToolNix/COPYING.txt
+Лицензии сторонних компонентов MKVToolNix: LICENSES/MKVToolNix/licenses/
+
+При распространении EXE третьим лицам необходимо вместе с ним передать
+текст GPL и обеспечить доступ к исходному коду mkvmerge указанной версии
+(ссылкой выше или архивом исходников). Это требование GPL.
+
+----------------------------------------------------------------
+2. Компоненты, входящие в mkvmerge
+----------------------------------------------------------------
+- Qt 6 — LGPL-3.0 (LICENSES/MKVToolNix/licenses/LGPL-3.0.txt)
+- Boost — Boost Software License 1.0
+  (LICENSES/MKVToolNix/licenses/Boost-1.0.txt)
+- nlohmann/json — MIT (LICENSES/MKVToolNix/licenses/nlohmann-json-MIT.txt)
+- pugixml — MIT (LICENSES/MKVToolNix/licenses/pugixml-MIT.txt)
+- QtWaitingSpinner — MIT
+  (LICENSES/MKVToolNix/licenses/QtWaitingSpinner-MIT.txt)
+- Документация MKVToolNix — CC BY 3.0
+  (LICENSES/MKVToolNix/licenses/CC-BY-3.0.txt)
+- LGPL-2.1 (LICENSES/MKVToolNix/licenses/LGPL-2.1.txt)
+
+----------------------------------------------------------------
+3. Python
+----------------------------------------------------------------
+Python 3.15.2 — PSF License Agreement.
+Текст: LICENSES/Python-3.15.txt
+https://www.python.org/
+
+----------------------------------------------------------------
+4. Tcl/Tk
+----------------------------------------------------------------
+Tcl/Tk 9.0 (входит в поставку Python) — BSD-подобная лицензия Tcl/Tk.
+Текст: LICENSES/Tcl-Tk.txt
+
+----------------------------------------------------------------
+5. CustomTkinter
+----------------------------------------------------------------
+CustomTkinter 6.0.0 — MIT License, Copyright (c) 2023 Tom Schimansky.
+Текст: LICENSES/CustomTkinter-MIT.txt
+https://github.com/TomSchimansky/CustomTkinter
+
+----------------------------------------------------------------
+6. PyInstaller
+----------------------------------------------------------------
+PyInstaller 6.22.3 — GPL-2.0-or-later с исключением для bootloader'а,
+разрешающим распространение упакованных приложений на любых условиях.
+Текст: LICENSES/PyInstaller.txt
+https://pyinstaller.org/
+
+================================================================
+Данная программа предоставляется БЕЗ КАКИХ-ЛИБО ГАРАНТИЙ, в том числе
+без подразумеваемых гарантий товарной пригодности или пригодности для
+конкретной цели. Подробности — в GNU GPL v2.
