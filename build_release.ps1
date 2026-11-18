@@ -11,16 +11,12 @@
       5) SHA256SUMS.txt       -> release\SHA256SUMS.txt
 
     Версия берётся из installer\MKV_Muxer.iss (MyAppVersion).
-    Пути к Python, mkvmerge и ISCC определяются автоматически;
+    Пути к Python и ISCC определяются автоматически;
     при необходимости их можно передать параметрами.
 
 .PARAMETER Python
     Путь к python.exe. По умолчанию ищется Python 3.10-3.16 в профиле пользователя,
     затем python.exe из PATH.
-
-.PARAMETER Mkvmerge
-    Путь к mkvmerge.exe. По умолчанию: переменная среды MKVMERGE,
-    затем C:\Program Files\MKVToolNix\mkvmerge.exe.
 
 .PARAMETER Iscc
     Путь к ISCC.exe (Inno Setup). По умолчанию ищется в LOCALAPPDATA и Program Files.
@@ -35,12 +31,11 @@
     powershell -NoProfile -ExecutionPolicy Bypass -File .\build_release.ps1
 
 .EXAMPLE
-    .\build_release.ps1 -Mkvmerge "D:\MKVToolNix\mkvmerge.exe" -KeepBuild
+    .\build_release.ps1 -KeepBuild
 #>
 [CmdletBinding()]
 param(
     [string]$Python,
-    [string]$Mkvmerge,
     [string]$Iscc,
     [switch]$SkipInstaller,
     [switch]$KeepBuild
@@ -127,19 +122,6 @@ if (-not $Python -or -not (Test-Path -LiteralPath $Python)) {
 if ($LASTEXITCODE -ne 0) {
     throw "Для $Python не установлены PyInstaller и/или customtkinter. Выполните: & '$Python' -m pip install pyinstaller customtkinter pillow"
 }
-
-# --- mkvmerge ---
-if (-not $Mkvmerge) {
-    $Mkvmerge = $env:MKVMERGE
-}
-if (-not $Mkvmerge) {
-    $Mkvmerge = 'C:\Program Files\MKVToolNix\mkvmerge.exe'
-}
-if (-not (Test-Path -LiteralPath $Mkvmerge)) {
-    throw "mkvmerge.exe не найден: $Mkvmerge. Укажите путь: -Mkvmerge ""C:\...\mkvmerge.exe"""
-}
-# spec-файлы читают этот путь
-$env:MKVMERGE = $Mkvmerge
 
 # --- Inno Setup ---
 if (-not $SkipInstaller -and -not $Iscc) {
@@ -296,7 +278,6 @@ foreach ($name in $artifactNames) {
 Write-Host ("  {0}" -f (Join-Path $release 'SHA256SUMS.txt'))
 Write-Host ''
 Write-Host "Python:     $Python"
-Write-Host "mkvmerge:   $Mkvmerge"
 if (-not $SkipInstaller) {
     Write-Host "Inno Setup: $Iscc"
 }

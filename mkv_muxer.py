@@ -7,9 +7,6 @@ Copyright (C) 2026 MKV Muxer contributors.
 Эта программа распространяется под GNU General Public License версии 2
 или (по вашему выбору) любой более поздней версии. Полный текст лицензии
 находится в файле LICENSES/GPL-2.0.txt.
-
-Программа вызывает mkvmerge из состава MKVToolNix (GPLv2+, © Moritz Bunkus).
-mkvmerge распространяется как отдельная программа и встроен в EXE без изменений.
 """
 
 import os
@@ -26,8 +23,6 @@ import customtkinter as ctk
 
 APP_NAME = "MKV Muxer"
 APP_VERSION = "2.0"
-MKVTOOLNIX_VERSION = "103.0"
-MKVTOOLNIX_SOURCE = "https://codeberg.org/mbunkus/mkvtoolnix"
 
 # ---------- Палитра ----------
 BG = "#0E1015"
@@ -57,7 +52,7 @@ def resource_path(*parts):
 
 
 def _no_window_flags():
-    """Не показывать консольное окно при вызове mkvmerge из GUI-сборки."""
+    """Не показывать консольное окно при вызове внешних утилит из GUI-сборки."""
     return subprocess.CREATE_NO_WINDOW if os.name == "nt" else 0
 
 
@@ -73,13 +68,11 @@ class MkvMuxerApp(ctk.CTk):
             pass
 
         # --- Переменные состояния ---
-        self.mkvmerge_path = tk.StringVar()
         self.video_dir = tk.StringVar()
         self.audio_dir = tk.StringVar()
         self.output_dir = tk.StringVar()
         self.use_new_suffix = tk.BooleanVar(value=False)
         self.mode_hint = tk.StringVar()
-        self.version_text = tk.StringVar(value="поиск mkvmerge…")
 
         self._events = queue.Queue()
         self._worker = None
@@ -87,7 +80,6 @@ class MkvMuxerApp(ctk.CTk):
         self._stage = None
         self._about = None
 
-        self.auto_detect_mkvmerge()
         self._build_ui()
 
         self.output_dir.trace_add("write", lambda *_: self._update_mode_hint())
@@ -97,7 +89,6 @@ class MkvMuxerApp(ctk.CTk):
         self.protocol("WM_DELETE_WINDOW", self._on_close)
         self.after(80, self._poll_events)
         self.after(120, self._welcome)
-        self.after(320, self._probe_mkvmerge)
 
     # ==================================================================
     #  Интерфейс
@@ -129,20 +120,6 @@ class MkvMuxerApp(ctk.CTk):
             font=ctk.CTkFont("Segoe UI", 13), text_color=MUTED
         ).grid(row=1, column=0, sticky="w", pady=(2, 0))
 
-        badge = ctk.CTkFrame(header, fg_color=CARD, corner_radius=17,
-                             border_width=1, border_color=BORDER)
-        badge.grid(row=0, column=1, sticky="e", pady=6)
-        self.badge_dot = ctk.CTkLabel(
-            badge, text="●", width=16, text_color=MUTED,
-            font=ctk.CTkFont("Segoe UI", 11)
-        )
-        self.badge_dot.grid(row=0, column=0, padx=(12, 2), pady=5)
-        self.version_label = ctk.CTkLabel(
-            badge, textvariable=self.version_text,
-            font=ctk.CTkFont("Segoe UI", 12), text_color=MUTED
-        )
-        self.version_label.grid(row=0, column=1, padx=(0, 13), pady=5)
-
     def _build_paths_card(self):
         card = ctk.CTkFrame(self, fg_color=CARD, corner_radius=16)
         card.grid(row=1, column=0, sticky="ew", padx=28)
@@ -155,35 +132,25 @@ class MkvMuxerApp(ctk.CTk):
             head, text="Источники и сохранение",
             font=ctk.CTkFont("Segoe UI", 14, "bold"), text_color=TEXT
         ).grid(row=0, column=0, sticky="w")
-        ctk.CTkLabel(
-            head, text="mkvmerge уже встроен в программу",
-            font=ctk.CTkFont("Segoe UI", 11), text_color=MUTED
-        ).grid(row=0, column=1, sticky="e")
 
-        self.entry_mkvmerge = self._field_row(
-            card, 1, "1", "mkvmerge",
-            self.mkvmerge_path, r"C:\Program Files\MKVToolNix\mkvmerge.exe",
-            self.select_mkvmerge,
-        )
         self._field_row(
-            card, 2, "2", "Видео",
+            card, 1, "1", "Видео",
             self.video_dir, "Папка с .mkv файлами",
             lambda: self.select_dir(self.video_dir),
         )
         self._field_row(
-            card, 3, "3", "Аудио",
+            card, 2, "2", "Аудио",
             self.audio_dir, "Папка с .mka, .ac3, .flac …",
             lambda: self.select_dir(self.audio_dir),
         )
         self._field_row(
-            card, 4, "4", "Сохранение",
+            card, 3, "3", "Сохранение",
             self.output_dir, "Пусто — заменить оригинал",
             lambda: self.select_dir(self.output_dir),
         )
-        self.entry_mkvmerge.bind("<FocusOut>", lambda _e: self._probe_mkvmerge())
 
         sep = ctk.CTkFrame(card, height=1, fg_color=BORDER, corner_radius=0)
-        sep.grid(row=6, column=0, columnspan=4, sticky="ew", padx=18, pady=(10, 2))
+        sep.grid(row=5, column=0, columnspan=4, sticky="ew", padx=18, pady=(10, 2))
 
         ctk.CTkLabel(
             card,
@@ -192,7 +159,7 @@ class MkvMuxerApp(ctk.CTk):
                  "пустое сохранение = замена оригинала",
             font=ctk.CTkFont("Segoe UI", 10), text_color="#5D6678",
             anchor="w",
-        ).grid(row=5, column=0, columnspan=4, sticky="ew", padx=20, pady=(2, 0))
+        ).grid(row=4, column=0, columnspan=4, sticky="ew", padx=20, pady=(2, 0))
 
         self.suffix_switch = ctk.CTkSwitch(
             card,
@@ -206,13 +173,13 @@ class MkvMuxerApp(ctk.CTk):
             button_hover_color=TEXT,
             command=self._update_mode_hint,
         )
-        self.suffix_switch.grid(row=7, column=1, columnspan=2, sticky="w", pady=(4, 14))
+        self.suffix_switch.grid(row=6, column=1, columnspan=2, sticky="w", pady=(4, 14))
 
         self.mode_label = ctk.CTkLabel(
             card, textvariable=self.mode_hint,
             font=ctk.CTkFont("Segoe UI", 11), text_color=MUTED
         )
-        self.mode_label.grid(row=7, column=2, columnspan=2, sticky="e", padx=(0, 18), pady=(4, 14))
+        self.mode_label.grid(row=6, column=2, columnspan=2, sticky="e", padx=(0, 18), pady=(4, 14))
     def _field_row(self, parent, row, number, label, var, placeholder, command):
         badge = ctk.CTkLabel(
             parent, text=number, width=24, height=24, corner_radius=8,
@@ -316,8 +283,7 @@ class MkvMuxerApp(ctk.CTk):
 
         ctk.CTkLabel(
             footer,
-            text=f"{APP_NAME} {APP_VERSION}  ·  GNU GPL v2+  ·  mkvmerge "
-                 f"v{MKVTOOLNIX_VERSION} © Moritz Bunkus",
+            text=f"{APP_NAME} {APP_VERSION}  ·  GNU GPL v2+",
             font=ctk.CTkFont("Segoe UI", 10), text_color="#5D6678",
         ).grid(row=0, column=0, sticky="w")
 
@@ -329,60 +295,8 @@ class MkvMuxerApp(ctk.CTk):
         ).grid(row=0, column=1, sticky="e")
 
     # ==================================================================
-    #  Автопоиск и версия mkvmerge
-    # ==================================================================
-    def auto_detect_mkvmerge(self):
-        possible_paths = [
-            # 1) mkvmerge, встроенный в EXE (--add-binary ...;MKVToolNix)
-            resource_path("MKVToolNix", "mkvmerge.exe"),
-            # 2) обычная установка MKVToolNix
-            r"C:\Program Files\MKVToolNix\mkvmerge.exe",
-            r"C:\Program Files (x86)\MKVToolNix\mkvmerge.exe",
-            os.path.join(os.getcwd(), "MKVToolNix", "mkvmerge.exe"),
-        ]
-        for p in possible_paths:
-            if os.path.isfile(p):
-                self.mkvmerge_path.set(p)
-                return
-
-    def _probe_mkvmerge(self):
-        path = self.mkvmerge_path.get().strip()
-        if not path or not os.path.isfile(path):
-            self.version_text.set("mkvmerge не найден")
-            self.version_label.configure(text_color=RED)
-            self.badge_dot.configure(text_color=RED)
-            return
-        try:
-            result = subprocess.run(
-                [path, "--version"], capture_output=True, text=True,
-                encoding="utf-8", errors="replace",
-                creationflags=_no_window_flags(), timeout=15,
-            )
-            first = (result.stdout or "").splitlines()[0] if result.stdout else ""
-            match = re.search(r"mkvmerge v([\d.]+)", first)
-            version = match.group(1) if match else "?"
-            self.version_text.set(f"mkvmerge v{version}")
-            self.version_label.configure(text_color=GREEN)
-            self.badge_dot.configure(text_color=GREEN)
-            self._append_log(f"mkvmerge v{version}: {path}", "muted")
-        except Exception as exc:
-            self.version_text.set("mkvmerge недоступен")
-            self.version_label.configure(text_color=RED)
-            self.badge_dot.configure(text_color=RED)
-            self._append_log(f"Не удалось запустить mkvmerge: {exc}", "err")
-
-    # ==================================================================
     #  Диалоги выбора
     # ==================================================================
-    def select_mkvmerge(self):
-        path = filedialog.askopenfilename(
-            title="Выберите mkvmerge.exe",
-            filetypes=[("Executable", "*.exe"), ("Все файлы", "*.*")],
-        )
-        if path:
-            self.mkvmerge_path.set(path)
-            self._probe_mkvmerge()
-
     def select_dir(self, var):
         path = filedialog.askdirectory(title="Выберите папку")
         if path:
@@ -423,17 +337,13 @@ class MkvMuxerApp(ctk.CTk):
     #  Запуск и остановка
     # ==================================================================
     def start_processing(self):
-        mkvmerge = self.mkvmerge_path.get().strip()
+        mkvmerge = resource_path("MKVToolNix", "mkvmerge.exe")
         v_dir = self.video_dir.get().strip()
         a_dir = self.audio_dir.get().strip()
         out_dir = self.output_dir.get().strip()
         use_suffix = self.use_new_suffix.get()
 
         errors = []
-        if not mkvmerge:
-            errors.append("не указан путь к mkvmerge.exe")
-        elif not os.path.isfile(mkvmerge):
-            errors.append(f"mkvmerge.exe не найден:\n{mkvmerge}")
         if not v_dir or not os.path.isdir(v_dir):
             errors.append("папка с видео не найдена")
         if not a_dir or not os.path.isdir(a_dir):
@@ -784,26 +694,6 @@ class MkvMuxerApp(ctk.CTk):
             font=ctk.CTkFont("Segoe UI", 12), text_color=MUTED
         ).pack(anchor="w", padx=26, pady=(2, 14))
 
-        mkv_card = ctk.CTkFrame(win, fg_color=CARD, corner_radius=14)
-        mkv_card.pack(fill="x", padx=26, pady=(0, 12))
-        ctk.CTkLabel(
-            mkv_card, text="Встроенный mkvmerge",
-            font=ctk.CTkFont("Segoe UI", 13, "bold"), text_color=TEXT
-        ).pack(anchor="w", padx=16, pady=(14, 2))
-        ctk.CTkLabel(
-            mkv_card,
-            text=f"MKVToolNix / mkvmerge v{MKVTOOLNIX_VERSION} · © Moritz Bunkus\n"
-                 "GNU GPL v2+ · двоичный файл включён без изменений",
-            font=ctk.CTkFont("Segoe UI", 11), text_color=MUTED, justify="left",
-        ).pack(anchor="w", padx=16)
-        ctk.CTkButton(
-            mkv_card, text="Исходный код MKVToolNix ↗", width=210, height=30,
-            corner_radius=8, fg_color=FIELD, hover_color=BORDER,
-            border_width=1, border_color=BORDER, text_color=ACCENT,
-            font=ctk.CTkFont("Segoe UI", 11),
-            command=lambda: webbrowser.open(MKVTOOLNIX_SOURCE),
-        ).pack(anchor="w", padx=16, pady=(10, 14))
-
         lic_card = ctk.CTkFrame(win, fg_color=CARD, corner_radius=14)
         lic_card.pack(fill="x", padx=26, pady=(0, 12))
         ctk.CTkLabel(
@@ -870,7 +760,7 @@ class MkvMuxerApp(ctk.CTk):
     def _welcome(self):
         self._append_log(f"{APP_NAME} {APP_VERSION} — готов к работе.", "accent")
         self._append_log(
-            "Укажите папки и нажмите «Запустить». mkvmerge уже встроен.",
+            "Укажите папки и нажмите «Запустить».",
             "muted",
         )
         self._append_log(
