@@ -1,6 +1,6 @@
 # SPDX-License-Identifier: GPL-2.0-or-later
 """
-MKV Muxer 2.0 — пакетное добавление аудиодорожек в MKV.
+MKV Muxer 1.0 — пакетное добавление аудиодорожек в MKV.
 
 Copyright (C) 2026 MKV Muxer contributors.
 
@@ -22,7 +22,7 @@ from tkinter import filedialog, messagebox
 import customtkinter as ctk
 
 APP_NAME = "MKV Muxer"
-APP_VERSION = "2.0"
+APP_VERSION = "1.0"
 
 # ---------- Палитра ----------
 BG = "#0E1015"

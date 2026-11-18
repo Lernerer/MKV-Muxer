@@ -76,7 +76,7 @@
 Контрольные суммы готовых файлов лежат в `release\SHA256SUMS.txt`; проверка:
 
 ```powershell
-Get-FileHash .\release\MKV_Muxer_2.0_setup.exe -Algorithm SHA256
+Get-FileHash .\release\MKV_Muxer_1.0_setup.exe -Algorithm SHA256
 ```
 
 ## Лицензия
