@@ -18,29 +18,6 @@
 - Тёмный интерфейс на CustomTkinter, русский язык.
 - Portable-сборка одним `.exe` и установщик без прав администратора.
 
-## Системные требования
-
-| | |
-|---|---|
-| ОС | Windows 10 / 11, 64-бит |
-| Свободное место | около 100 МБ на время запуска portable-версии |
-| Права | обычные права пользователя |
-
-При первом запуске portable-версия распаковывает встроенные ресурсы во временную папку. Это занимает 1–3 секунды; установленная версия (onedir) запускается сразу.
-
-## Быстрый старт
-
-1. Возьмите `MKV_Muxer.exe` из portable-архива или установите `MKV_Muxer_<версия>_setup.exe`.
-2. Запустите программу.
-3. Укажите папки:
-   - **Видео** — папка с `.mkv`-файлами;
-   - **Аудио** — папка с аудиофайлами (без подпапок);
-   - **Сохранение** — папка для результата, можно оставить пустой.
-4. Нажмите **Запустить**.
-
-> [!NOTE]
-> Программа просматривает только выбранную папку, без подпапок. Для аудио выбирайте папку, где файлы лежат непосредственно, например `RUS Sound [StudioBand]`.
-
 ## Режимы сохранения
 
 | Папка сохранения | Суффикс `_new` | Результат |
@@ -73,44 +50,6 @@
 `.mka`, `.ac3`, `.aac`, `.flac`, `.dts`, `.mp3`, `.eac3`, `.m4a`, `.wav`
 
 Новая дорожка добавляется к существующим дорожкам MKV. Видео и субтитры не перекодируются — пересобирается контейнер.
-
-## Сборка из исходников
-
-Нужны Python 3.10+ (проверено на 3.15.2), PyInstaller, CustomTkinter, Pillow и Inno Setup 6.3+ (проверено на 7.1.1).
-
-```powershell
-python -m pip install pyinstaller customtkinter pillow
-
-# полная сборка: EXE, onedir, установщик, ZIP и SHA256SUMS
-.\build_release.ps1
-```
-
-Скрипт создаёт:
-
-- `dist\MKV_Muxer.exe` — portable onefile;
-- `dist\MKV_Muxer\` — onedir для установщика;
-- `release\MKV_Muxer_<версия>_setup.exe`;
-- `release\MKV_Muxer_<версия>_portable.zip`;
-- `release\SHA256SUMS.txt`.
-
-Версия берётся из `installer\MKV_Muxer.iss`. Полезные параметры `build_release.ps1`:
-
-| Параметр | Назначение |
-|---|---|
-| `-Python "C:\...\python.exe"` | явный путь к Python |
-| `-Iscc "C:\...\ISCC.exe"` | явный путь к Inno Setup |
-| `-SkipInstaller` | только portable EXE и ZIP |
-| `-KeepBuild` | сохранить промежуточные папки сборки |
-
-Ручная сборка:
-
-```powershell
-python -m PyInstaller --noconfirm MKV_Muxer.spec
-python -m PyInstaller --noconfirm MKV_Muxer_onedir.spec
-& "$env:LOCALAPPDATA\Programs\InnoSetup7\ISCC.exe" installer\MKV_Muxer.iss
-```
-
-`build\`, `dist\` и `release\` не хранятся в репозитории — это результаты сборки. Готовые файлы из `release\` можно приложить к GitHub Releases.
 
 ## Структура проекта
 
