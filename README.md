@@ -73,12 +73,6 @@
 
 Сборки не подписаны. Windows SmartScreen может показать «Неизвестный издатель», а антивирус — ложное срабатывание на PyInstaller-сборку. Подробная инструкция по сертификату, `signtool` и настройке Inno Setup находится в [`SIGNING.md`](SIGNING.md).
 
-Контрольные суммы готовых файлов лежат в `release\SHA256SUMS.txt`; проверка:
-
-```powershell
-Get-FileHash .\release\MKV_Muxer_1.0_setup.exe -Algorithm SHA256
-```
-
 ## Лицензия
 
 Код программы распространяется под **GNU General Public License v2.0 или новее** (`GPL-2.0-or-later`). Полный текст — в файлах [`LICENSE`](LICENSE) и [`LICENSES/GPL-2.0.txt`](LICENSES/GPL-2.0.txt).
