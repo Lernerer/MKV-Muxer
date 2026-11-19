@@ -314,7 +314,8 @@ class MkvMuxerApp(ctk.CTk):
     def extract_episode_number(filename):
         """
         Извлекает номер серии из имени файла.
-        Поддерживает: S01E05, E05, Ep05, Episode 5, " - 05", "_05", " 05 ".
+        Поддерживает: S01E05, E05, Ep05, Episode 5, " - 05", "_05", " 05 ",
+        а также нумерацию вида "Season 2 Episode 3".
         Возвращает строку с номером (2 цифры) или None.
         """
         name = os.path.splitext(os.path.basename(filename))[0]
@@ -326,6 +327,14 @@ class MkvMuxerApp(ctk.CTk):
         m = re.search(r'(?:^|[^A-Za-z])(?:E|Ep|Episode)[\s._-]*(\d{1,3})', name, re.IGNORECASE)
         if m:
             return m.group(1).zfill(2)
+
+        m = re.search(
+            r'(?:season|сезон)[\s._-]*(\d+)[\s._-]*(?:episode|episod|часть|part|series|серия)[\s._-]*(\d+)',
+            name,
+            re.IGNORECASE,
+        )
+        if m:
+            return m.group(2).zfill(2)
 
         candidates = re.findall(r'(?:^|[\s._-])(\d{1,3})(?=[\s._-]|$)', name)
         if candidates:
