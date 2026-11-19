@@ -4,7 +4,7 @@
 ; Установка per-user, без прав администратора.
 
 #define MyAppName "MKV Muxer"
-#define MyAppVersion "1.0"
+#define MyAppVersion "1.0.1"
 #define MyAppPublisher "MKV Muxer contributors"
 #define MyAppExeName "MKV_Muxer.exe"
 #define MyAppId "{{BBBF3421-38FC-49B6-9A2A-9B523E4593DF}"
@@ -30,7 +30,7 @@ SolidCompression=yes
 WizardStyle=modern
 ArchitecturesAllowed=x64compatible
 ArchitecturesInstallIn64BitMode=x64compatible
-VersionInfoVersion=1.0.0.0
+VersionInfoVersion=1.0.1.0
 VersionInfoCompany={#MyAppPublisher}
 VersionInfoDescription={#MyAppName} Setup
 VersionInfoProductName={#MyAppName}

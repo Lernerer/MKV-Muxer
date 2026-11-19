@@ -1,6 +1,6 @@
 # SPDX-License-Identifier: GPL-2.0-or-later
 """
-MKV Muxer 1.0 — пакетное добавление аудиодорожек в MKV.
+MKV Muxer 1.0.1 — пакетное добавление аудиодорожек в MKV.
 
 Copyright (C) 2026 MKV Muxer contributors.
 
@@ -22,7 +22,7 @@ from tkinter import filedialog, messagebox
 import customtkinter as ctk
 
 APP_NAME = "MKV Muxer"
-APP_VERSION = "1.0"
+APP_VERSION = "1.0.1"
 
 # ---------- Палитра ----------
 BG = "#0E1015"
@@ -315,7 +315,8 @@ class MkvMuxerApp(ctk.CTk):
         """
         Извлекает номер серии из имени файла.
         Поддерживает: S01E05, E05, Ep05, Episode 5, " - 05", "_05", " 05 ",
-        а также нумерацию вида "Season 2 Episode 3".
+        SxxExx с разделителями (точка, _, -, x) и без нулей, формат 1x01,
+        а также нумерацию вида "Season 2 Episode 3" / "Сезон 2 ... 3".
         Возвращает строку с номером (2 цифры) или None.
         """
         name = os.path.splitext(os.path.basename(filename))[0]

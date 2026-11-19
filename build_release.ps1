@@ -85,7 +85,7 @@ foreach ($required in @($specOnefile, $specOnedir, (Join-Path $root 'mkv_muxer.p
 }
 
 # --- версия из сценария Inno Setup ---
-$version = '1.0'
+$version = '1.0.1'
 if (Test-Path -LiteralPath $issPath) {
     $match = Select-String -LiteralPath $issPath -Pattern '#define\s+MyAppVersion\s+"([^"]+)"' |
         Select-Object -First 1

@@ -1,4 +1,4 @@
-MKV Muxer 1.0 — THIRD-PARTY NOTICES / СТОРОННИЕ КОМПОНЕНТЫ
+MKV Muxer 1.0.1 — THIRD-PARTY NOTICES / СТОРОННИЕ КОМПОНЕНТЫ
 ================================================================
 
 Эта программа распространяется под GNU General Public License версии 2

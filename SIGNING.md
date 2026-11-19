@@ -66,7 +66,7 @@ signtool.exe входит в Windows SDK (Signing Tools). Проверка:
 3.4. Подписать установщик:
 
   signtool sign /fd SHA256 /tr http://timestamp.digicert.com /td SHA256 ^
-    /d "MKV Muxer Setup" "release\MKV_Muxer_1.0_setup.exe"
+    /d "MKV Muxer Setup" "release\MKV_Muxer_*_setup.exe"
 
 3.5. Заново собрать portable ZIP (чтобы внутри был подписанный EXE)
      и пересчитать SHA256SUMS.txt.
@@ -97,11 +97,11 @@ SignedUninstaller=yes подписывает и unins000.exe, который с�
 
 5. Проверка подписи
 -------------------
-  signtool verify /pa /v "release\MKV_Muxer_1.0_setup.exe"
+  signtool verify /pa /v "release\MKV_Muxer_*_setup.exe"
 
 PowerShell:
 
-  Get-AuthenticodeSignature -LiteralPath "release\MKV_Muxer_1.0_setup.exe" |
+  Get-AuthenticodeSignature -LiteralPath "release\MKV_Muxer_*_setup.exe" |
     Format-List Status, StatusMessage, SignerCertificate
 
 Ожидаемо: Status = Valid, в SignerCertificate — ваш издатель.
