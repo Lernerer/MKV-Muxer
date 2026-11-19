@@ -320,13 +320,17 @@ class MkvMuxerApp(ctk.CTk):
         """
         name = os.path.splitext(os.path.basename(filename))[0]
 
-        m = re.search(r'[Ss]\d{1,2}[Ee](\d{1,3})', name)
+        m = re.search(r'[Ss]\d{1,2}[\s._xX\-]*[Ee](\d{1,3})', name)
         if m:
             return m.group(1).zfill(2)
 
         m = re.search(r'(?:^|[^A-Za-z])(?:E|Ep|Episode)[\s._-]*(\d{1,3})', name, re.IGNORECASE)
         if m:
             return m.group(1).zfill(2)
+
+        m = re.search(r'(?<![\d])(\d{1,2})[xX](\d{1,2})(?![\d])', name)
+        if m:
+            return m.group(2).zfill(2)
 
         m = re.search(
             r'(?:season|сезон)[\s._-]*(\d+)[\s._-]*(?:episode|episod|часть|part|series|серия)[\s._-]*(\d+)',
